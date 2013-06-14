@@ -15,15 +15,15 @@ class API(object):
     """Twitter API"""
 
     def __init__(self, auth_handler=None,
-            host='api.twitter.com', search_host='search.twitter.com',
-             cache=None, secure=True, api_root='/1.1', search_root='',
+            host='api.twitter.com', #search_host='search.twitter.com',
+             cache=None, secure=True, api_root='/1.1', #search_root='',
             retry_count=0, retry_delay=0, retry_errors=None, timeout=60,
             parser=None, compression=False):
         self.auth = auth_handler
         self.host = host
-        self.search_host = search_host
+        #self.search_host = search_host
         self.api_root = api_root
-        self.search_root = search_root
+        #self.search_root = search_root
         self.cache = cache
         self.secure = secure
         self.compression = compression
@@ -249,6 +249,13 @@ class API(object):
         payload_type = 'user',
         allowed_param = ['id', 'user_id', 'screen_name'],
         require_auth = True
+    )
+
+    """ friendships/exists """
+    exists_friendship = bind_api(
+        path = '/friendships/exists.json',
+        payload_type = 'json',
+        allowed_param = ['user_a', 'user_b']
     )
 
     """ friendships/show """
@@ -626,14 +633,21 @@ class API(object):
         allowed_param = ['lat', 'long']
     )
 
-    """ search """
+    """ search search/tweets.json"""
     search = bind_api(
-        search_api = True,
-        path = '/search.json',
+        #search_api = True,
+        path = '/search/tweets.json', #'/search.json',
         payload_type = 'search_result', payload_list = True,
-        allowed_param = ['q', 'lang', 'locale', 'rpp', 'page', 'since_id', 'geocode', 'show_user', 'max_id', 'since', 'until', 'result_type']
+        allowed_param = ['q', 'lang', 'locale', 'since_id', 'geocode', 'max_id', 'since', 'until', 'result_type', 'count', 'include_entities', 'cursor'],
+#       allowed_param = ['q', 'lang', 'locale', 'since_id', 'geocode', 'show_user', 'max_id', 'since', 'until', 'result_type'] 
+       #allowed_param = ['q', 'lang', 'locale', 'since_id', 'geocode', 'max_id', 'since', 'until', 'result_type', 'count', 'include_entities', 'rpp', 'page', 'show_user']   nrig 
+       #allowed_param = ['q', 'lang', 'locale', 'since_id', 'geocode', 'max_id', 'since', 'until', 'result_type', 'count', 'include_entities', 'cursor', 'show_user'],       inactivist
+     # api 1.1: callback -since
+        #allowed_param = ['q', 'lang', 'locale', 'rpp', 'page', 'since_id', 'geocode', 'show_user', 'max_id', 'since', 'until', 'result_type'],
+        # api 1.0: -since callback include_entities
+        require_auth = True
     )
-    search.pagination_mode = 'page'
+    #search.pagination_mode = 'page'
 
     """ trends/daily """
     trends_daily = bind_api(

@@ -211,32 +211,36 @@ class SavedSearch(Model):
 
 class SearchResult(Model):
 
-    @classmethod
-    def parse(cls, api, json):
-        result = cls()
-        for k, v in json.items():
-            if k == 'created_at':
-                setattr(result, k, parse_search_datetime(v))
-            elif k == 'source':
-                setattr(result, k, parse_html_value(unescape_html(v)))
-            else:
-                setattr(result, k, v)
-        return result
+#    @classmethod
+#    def parse(cls, api, json):
+        #result = cls()
+        #for k, v in json.items():
+            #if k == 'created_at':
+                #setattr(result, k, parse_search_datetime(v))
+            ##elif k == 'source':
+            ##    setattr(result, k, parse_html_value(unescape_html(v)))
+            #else:
+                #setattr(result, k, v)
+        #return result
 
     @classmethod
     def parse_list(cls, api, json_list, result_set=None):
         results = ResultSet()
-        results.max_id = json_list.get('max_id')
-        results.since_id = json_list.get('since_id')
-        results.refresh_url = json_list.get('refresh_url')
-        results.next_page = json_list.get('next_page')
-        results.results_per_page = json_list.get('results_per_page')
-        results.page = json_list.get('page')
-        results.completed_in = json_list.get('completed_in')
-        results.query = json_list.get('query')
+        search_metadata = json_list.get('search_metadata')
 
-        for obj in json_list['results']:
-            results.append(cls.parse(api, obj))
+        results.max_id = search_metadata.get('max_id')
+        results.since_id = search_metadata.get('since_id')
+        results.refresh_url = search_metadata.get('refresh_url')
+        results.next_results = search_metadata.get('next_results') # ('next_page')
+        results.count = search_metadata.get('count') # ('results_per_page')
+        #results.page = json_list.get('page')
+        results.completed_in = search_metadata.get('completed_in')
+        results.query = search_metadata.get('query')
+        
+        #for obj in json_list['results']:
+        status_model = getattr(api.parser.model_factory, 'status')
+        for obj in json_list['statuses']:
+            results.append(status_model.parse(api, obj))
         return results
 
 

@@ -9,6 +9,9 @@ import re
 from StringIO import StringIO
 import gzip
 
+#import json
+#from pprint import pprint
+
 from tweepy.error import TweepError
 from tweepy.utils import convert_to_utf8_str
 from tweepy.models import Model
@@ -26,7 +29,7 @@ def bind_api(**config):
         allowed_param = config.get('allowed_param', [])
         method = config.get('method', 'GET')
         require_auth = config.get('require_auth', False)
-        search_api = config.get('search_api', False)
+        #search_api = config.get('search_api', False)
         use_cache = config.get('use_cache', True)
 
         def __init__(self, api, args, kargs):
@@ -44,9 +47,10 @@ def bind_api(**config):
             self.build_parameters(args, kargs)
 
             # Pick correct URL root to use
-            if self.search_api:
-                self.api_root = api.search_root
-            else:
+            #if self.search_api:
+            #    self.api_root = api.search_root
+            #else:
+            if True:
                 self.api_root = api.api_root
 
             # Perform any path variable substitution
@@ -57,9 +61,10 @@ def bind_api(**config):
             else:
                 self.scheme = 'http://'
 
-            if self.search_api:
-                self.host = api.search_host
-            else:
+            #if self.search_api:
+            #    self.host = api.search_host
+            #else:
+            if True:
                 self.host = api.host
 
             # Manually set Host header to fix an issue in python 2.5
@@ -106,6 +111,8 @@ def bind_api(**config):
         def execute(self):
             # Build the request URL
             url = self.api_root + self.path
+            #print "tweepy attempting url: %s%s%s?%s "%("https://" if self.api.secure else "http://", self.host, url, self.parameters)
+            #print "tweepy attempting url headers: %s"%(self.headers)
             if len(self.parameters):
                 url = '%s?%s' % (url, urllib.urlencode(self.parameters))
 
@@ -180,6 +187,9 @@ def bind_api(**config):
                     body = zipper.read()
                 except Exception, e:
                     raise TweepError('Failed to decompress data: %s' % e)
+            #if self.payload_type == 'search_result':
+                #print "tweepy result: "
+                #pprint(json.loads(body))
             result = self.api.parser.parse(self, body)
 
             conn.close()
