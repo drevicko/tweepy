@@ -152,6 +152,14 @@ class OAuthToken(object):
     def __str__(self):
         return self.to_string()
 
+"""
+class OAuthApplicationOnlyRequest(object):
+    see https://dev.twitter.com/docs/auth/application-only-auth
+    (not https://dev.twitter.com/docs/auth/authorizing-request)
+    we need to handle getting the Bearer auth key via a post request to /oauth2/token with Authorization: Basic base64-encoded consumer_key:consumer_secret
+    then implement a to_header() that returns Authorization: Bearer <bearer_auth_key>
+    also implement sign_request and check which other methods of OAuthRequest need to be implemented
+"""
 
 class OAuthRequest(object):
     """OAuthRequest represents the request and can be serialized.

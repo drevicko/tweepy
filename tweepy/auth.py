@@ -33,6 +33,66 @@ class BasicAuthHandler(AuthHandler):
     def get_username(self):
         return self.username
 
+"""
+class OAuthApplicationOnlyHandler(AuthHandler):
+    OAUTH_HOST = 'api.twitter.com'
+    OAUTH_ROOT = '/oauth2/token/'
+    SECURE = True
+
+    def __init__(self, consumer_key, consumer_secret):
+        self._consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
+        self._sigmethod = oauth.OAuthSignatureMethod_HMAC_SHA1()
+        self.bearer_token = None
+        #self.callback = callback
+        self.secure = SECURE
+
+    def apply_auth(self, url, method, headers, parameters):
+        request = oauth.OAuthApplicationOnlyRequest.from_consumer_and_token(
+            self._consumer, http_url=url, http_method=method,
+            token=self.bearer_token, parameters=parameters
+        )
+        request.sign_request(self._sigmethod, self._consumer, self.access_token)
+        headers.update(request.to_header())
+
+    def _get_request_token(self):
+        try:
+            url = self._get_oauth_url('request_token')
+            request = oauth.OAuthRequest.from_consumer_and_token(
+                self._consumer, http_url=url, callback=self.callback
+            )
+            request.sign_request(self._sigmethod, self._consumer, None)
+            resp = urlopen(Request(url, headers=request.to_header()))
+            return oauth.OAuthToken.from_string(resp.read())
+        except Exception, e:
+            raise TweepError(e)
+
+    def set_request_token(self, key, secret):
+        self.request_token = oauth.OAuthToken(key, secret)
+
+    def get_bearer_token(self):
+        " ""
+        get the bearer token with user supplied application key and secret.
+        "" "
+        try:
+            ... needs to be adapted to getting an application-only bearer token.
+            url = self._get_oauth_url('access_token')
+
+            # build request
+            request = oauth.OAuthRequest.from_consumer_and_token(
+                self._consumer,
+                token=self.request_token, http_url=url,
+                verifier=str(verifier)
+            )
+            request.sign_request(self._sigmethod, self._consumer, self.request_token)
+
+            # send request
+            resp = urlopen(Request(url, headers=request.to_header()))
+            self.access_token = oauth.OAuthToken.from_string(resp.read())
+            return self.access_token
+        except Exception, e:
+            raise TweepError(e)
+
+"""
 
 class OAuthHandler(AuthHandler):
     """OAuth authentication handler"""
