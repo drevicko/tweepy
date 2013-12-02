@@ -62,7 +62,7 @@ class StreamListener(object):
         """Called when a limitation notice arrvies"""
         return
 
-    def on_error(self, status_code):
+    def on_error(self, status_code, response=None):
         """Called when a non-200 status code is returned"""
         return False
 
@@ -108,16 +108,16 @@ class Stream(object):
                 break
             try:
                 if self.scheme == "http":
-                    conn = httplib.HTTPConnection(self.host)
+                    conn = httplib.HTTPConnection(self.host, timeout=self.timeout)
                 else:
-                    conn = httplib.HTTPSConnection(self.host)
+                    conn = httplib.HTTPSConnection(self.host, timeout=self.timeout)
                 self.auth.apply_auth(url, 'POST', self.headers, self.parameters)
                 conn.connect()
                 conn.sock.settimeout(self.timeout)
                 conn.request('POST', self.url, self.body, headers=self.headers)
                 resp = conn.getresponse()
                 if resp.status != 200:
-                    if self.listener.on_error(resp.status) is False:
+                    if self.listener.on_error(resp.status, resp) is False:
                         break
                     error_counter += 1
                     sleep(self.retry_time)
@@ -237,7 +237,7 @@ class Stream(object):
             self.parameters['stall_warnings'] = stall_warnings
         if languages:
             self.parameters['language'] = ','.join(map(str, languages))
-        self.body = urlencode_noplus(self.parameters)
+        self.body = urlencode_noplus(self.parameters) #urlencode_noplus quote_plus
         self.parameters['delimited'] = 'length'
         self._start(async)
 

@@ -209,12 +209,17 @@ class OAuthRequest(object):
 
     def to_header(self, realm=''):
         """Serialize as a header for an HTTPAuth request."""
-        auth_header = 'OAuth realm="%s"' % realm
+        auth_header = 'OAuth '
+        first = True
+        if realm:
+            auth_header += 'realm="%s"' % realm
+            first = False
         # Add the oauth parameters.
         if self.parameters:
             for k, v in self.parameters.iteritems():
                 if k[:6] == 'oauth_':
-                    auth_header += ', %s="%s"' % (k, escape(str(v)))
+                    auth_header += '%s%s="%s"' % ('' if first else ', ', k, escape(str(v)))
+                    first = False
         return {'Authorization': auth_header}
 
     def to_postdata(self):
