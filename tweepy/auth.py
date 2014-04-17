@@ -2,6 +2,17 @@
 # Copyright 2009-2010 Joshua Roesslein
 # See LICENSE for details.
 
+'''
+Hi Shogo! I see you've made an application only auth class: 
+    http://shogo82148.github.io/blog/2013/05/09/application-only-authentication-with-tweepy/
+Nice work!
+    
+Would you like to make it into a pull request to tweepy: https://github.com/tweepy/tweepy
+It'd be good for it to be in there and attributed to you :)
+
+I wasn't sure how else to ask you for it, so I'm doing it here (;
+'''
+
 from urllib2 import Request, urlopen
 import base64
 
